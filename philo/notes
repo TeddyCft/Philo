@@ -1,0 +1,18 @@
+## to code ##
+
+drop_fork() : une fonction qui permet de remettre le owner des deux fork portees par le phi a 0;
+
+can_eat() : verifie si les fourchettes sont disponibles pour le phi, change leur owner auquel cas et print que le owner a prit des forks
+
+ajouter l init des forks dans data_init()
+
+------------------------------------
+## a comprendre ##
+
+-bien setup les threads pour chaque philosophe en leur faisant bien faire leur routine et en killant tout une fois que le phi est dead
+
+-comprendre mieux les mutex pour pouvoir proteger les forks et le data.goal
+
+-comprendre usleep pour pouvoir attendre la duree de chaque action
+
+------------------------------------
