@@ -6,13 +6,14 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:55:22 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/21 20:18:27 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/24 14:00:28 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "philo.h"
 
 void	*mfail(void)
@@ -55,6 +56,26 @@ int	arg_check(int argc, char **argv)
 	return (0);
 }
 
+t_fork	*fill_forks(t_data *data, int nb)
+{
+	t_fork	*new;
+	int		i;
+
+	new = 0;
+	new = ft_calloc(nb + 1, sizeof(t_fork));
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (i < nb)
+	{
+		pthread_mutex_init(&data->forks[i].mtx, NULL);
+		new[i].id = i + 1;
+		new[i].owner = 0;
+		i++;
+	}
+	return (new);
+}
+
 t_data	*fill_data(char **argv)
 {
 	t_data	*new;
@@ -67,7 +88,7 @@ t_data	*fill_data(char **argv)
 	new->tt_eat = ft_atoi(argv[3]);
 	new->tt_sleep = ft_atoi(argv[4]);
 	new->goal = ft_atoi(argv[5]);
-	new->forks = fill_forks(new->nb_philo);
+	new->forks = fill_forks(new, new->nb_philo);
 	if (!new->forks)
 		return (free(new), mfail());
 	return (new);
@@ -97,6 +118,7 @@ int	main(int argc, char **argv)
 {
 	t_data	*data;
 	t_philo	*philos;
+	int		ret;
 
 	if (arg_check(argc, argv))
 		return (1);
@@ -106,14 +128,11 @@ int	main(int argc, char **argv)
 	philos = get_philos(*data);
 	if (!philos)
 		return (free(data), 1);
-	philosophers(data, philos);
+	ret = philosophers(data, philos);
+	if (ret)
+		write(2, "Error : thread failed\n", 23);
+	free(data->forks);
 	free(data);
 	free(philos);
 	return (0);
 }
-
-/* to free
-
--(main) data
-
-*/

@@ -1,18 +1,22 @@
 ## to code ##
 
-drop_fork() : une fonction qui permet de remettre le owner des deux fork portees par le phi a 0;
+<!-- drop_fork() : une fonction qui permet de remettre le owner des deux fork portees par le phi a 0; -->
 
-can_eat() : verifie si les fourchettes sont disponibles pour le phi, change leur owner auquel cas et print que le owner a prit des forks
+<!-- can_eat() : verifie si les fourchettes sont disponibles pour le phi, change leur owner auquel cas et print que le owner a prit des forks -->
 
-ajouter l init des forks dans data_init()
+<!-- ajouter l init des forks dans data_init() -->
+
+<!-- stop_thread() join tous les threads en cours, contient une static pour verifier si ils ont deja ete stoppe.  -->
+
+end_philo() une fonction qui free tout ce qui est malloc et qui destroy les mutex
 
 ------------------------------------
 ## a comprendre ##
 
--bien setup les threads pour chaque philosophe en leur faisant bien faire leur routine et en killant tout une fois que le phi est dead
+<!-- bien setup les threads pour chaque philosophe en leur faisant bien faire leur routine et en killant tout une fois que le phi est dead -->
 
 -comprendre mieux les mutex pour pouvoir proteger les forks et le data.goal
 
--comprendre usleep pour pouvoir attendre la duree de chaque action
+<!-- comprendre usleep pour pouvoir attendre la duree de chaque action -->
 
 ------------------------------------

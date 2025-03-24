@@ -6,12 +6,14 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 14:45:39 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/21 20:15:07 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/24 14:08:38 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
+
+# include <pthread.h>
 
 typedef enum e_status
 {
@@ -24,8 +26,9 @@ typedef enum e_status
 
 typedef struct s_fork
 {
-	int		id;
-	int		owner;
+	int				id;
+	int				owner;
+	pthread_mutex_t	mtx;
 }	t_fork;
 
 typedef struct s_data
@@ -40,10 +43,11 @@ typedef struct s_data
 
 typedef struct s_philo
 {
-	int		id;
-	int		to_eat;
-	int		status;
-	long	last_meal;
+	pthread_t	thread;
+	int			id;
+	int			to_eat;
+	int			status;
+	long		last_meal;
 }	t_philo;
 
 #endif

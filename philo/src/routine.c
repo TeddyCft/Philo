@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 19:22:20 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/21 20:00:06 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/24 13:40:57 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-void	sleep(t_philo *philos, int i, long time)
+void	sleep(t_philo *philos, int i, long time, t_data *data)
 {
+	philos->status = SLEEP;
 	printf("%ld %d is sleeping\n", time, philos[i].id);
-	//wait tts
+	usleep(data->tt_die);
 }
 
 void	think(t_philo *philos, int i, long time)
@@ -33,11 +34,13 @@ int	eat(t_philo *philos, t_data *data, int i, long time)
 {
 	if (!can_eat(philos, i, *data))
 		return (0);
+	printf("%ld %d has taken a fork\n", time, philos[i].id);
+	printf("%ld %d has taken a fork\n", time, philos[i].id);
 	philos[i].status = EAT;
 	philos[i].last_meal = time;
 	printf("%ld %d is eating\n", time, philos[i].id);
-	//wait data.tt_eat
-	drop_forks(data, philos[i].id);
+	usleep(data->tt_eat);
+	drop_forks(philos, i, *data);
 	return (1);
 }
 
@@ -60,7 +63,7 @@ int	routine(t_data *data, t_philo *philos, int i)
 				data->goal--; //a proteger avec un mutex ??
 				philos[i].to_eat--;
 			}
-			sleep(philos, i, time.tv_usec / 1000);
+			sleep(philos, i, time.tv_usec / 1000, data);
 		}
 	}
 	gettimeofday(&time, NULL);
