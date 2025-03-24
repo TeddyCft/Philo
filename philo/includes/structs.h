@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 14:45:39 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/24 14:08:38 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:52:25 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,6 @@ typedef struct s_fork
 	pthread_mutex_t	mtx;
 }	t_fork;
 
-typedef struct s_data
-{
-	int		nb_philo;
-	int		tt_sleep;
-	int		tt_eat;
-	int		tt_die;
-	int		goal;
-	t_fork	*forks;
-}	t_data;
 
 typedef struct s_philo
 {
@@ -49,5 +40,17 @@ typedef struct s_philo
 	int			status;
 	long		last_meal;
 }	t_philo;
+
+typedef struct s_data
+{
+	int		i;
+	int		nb_philo;
+	int		tt_sleep;
+	int		tt_eat;
+	int		tt_die;
+	int		goal;
+	t_fork	*forks;
+	t_philo	*philos;
+}	t_data;
 
 #endif

@@ -6,15 +6,16 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 19:22:20 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/24 13:40:57 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/24 16:13:50 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/time.h>
 
-void	sleep(t_philo *philos, int i, long time, t_data *data)
+void	phi_sleep(t_philo *philos, int i, long time, t_data *data)
 {
 	philos->status = SLEEP;
 	printf("%ld %d is sleeping\n", time, philos[i].id);
@@ -23,16 +24,16 @@ void	sleep(t_philo *philos, int i, long time, t_data *data)
 
 void	think(t_philo *philos, int i, long time)
 {
-	if (philos[i].status == EAT)
+	if (philos[i].status != THINK)
 	{
-		philos[i].status == THINK;
+		philos[i].status = THINK;
 		printf("%ld %d is thinking\n", time, philos[i].id);
 	}
 }
 
 int	eat(t_philo *philos, t_data *data, int i, long time)
 {
-	if (!can_eat(philos, i, *data))
+	if (!can_eat(philos, i, data))
 		return (0);
 	printf("%ld %d has taken a fork\n", time, philos[i].id);
 	printf("%ld %d has taken a fork\n", time, philos[i].id);
@@ -40,33 +41,44 @@ int	eat(t_philo *philos, t_data *data, int i, long time)
 	philos[i].last_meal = time;
 	printf("%ld %d is eating\n", time, philos[i].id);
 	usleep(data->tt_eat);
-	drop_forks(philos, i, *data);
+	drop_forks(philos, i, data);
 	return (1);
 }
 
-int	routine(t_data *data, t_philo *philos, int i)
+void	*routine(void *arg)
 {
 	struct timeval	time;
+	t_data			*data;
+	int				i;
 
-	while (philos[i].status != DIE)
+	data = arg;
+	i = data->i;
+	printf("created philosopher n[%d]\n", i);
+	while (data->philos[i].status != DIE)
 	{
 		gettimeofday(&time, NULL);
-		if ((time.tv_usec / 1000) - philos[i].last_meal >= data->tt_die)
+		if ((time.tv_usec / 1000) - data->philos[i].last_meal >= data->tt_die)
 			break ;
-		if (!eat(philos, data, i, time.tv_usec / 1000))
-			think(philos, i, time.tv_usec / 1000);
+		if (!eat(data->philos, data, i, time.tv_usec / 1000))
+			think(data->philos, i, time.tv_usec / 1000);
 		else
 		{
-			philos[i].to_eat--;
-			if (philos[i].to_eat == 0)
+			data->philos[i].to_eat--;
+			if (data->philos[i].to_eat == 0)
 			{
-				data->goal--; //a proteger avec un mutex ??
-				philos[i].to_eat--;
+				if (data->goal)
+				{
+					data->goal--; //a proteger avec un mutex ??
+					if (!data->goal)
+						stop_threads(data, data->philos);
+				}
+				data->philos[i].to_eat--;
 			}
-			sleep(philos, i, time.tv_usec / 1000, data);
+			phi_sleep(data->philos, i, time.tv_usec / 1000, data);
 		}
 	}
 	gettimeofday(&time, NULL);
-	printf("%ld %d is dead\n", time.tv_usec / 1000, philos[i].id);
-	return (1);
+	printf("%ld %d is dead\n", time.tv_usec / 1000, data->philos[i].id);
+	stop_threads(data, data->philos);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 14:45:20 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/24 14:07:48 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:49:45 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,16 @@ int		ft_atoi(const char *nptr);
 
 // PHILO
 
-int		philosophers(t_data *data, t_philo *philo);
+int		philosophers(t_data *data);
+int		stop_threads(t_data *data, t_philo *philos);
 
 //ROUTINE
 
-int		routine(t_data *data, t_philo *philos, int i);
+void	*routine(void *data);
+
+//EAT
+
+int		can_eat(t_philo *philos, int i, t_data *data);
+void	drop_forks(t_philo *philos, int i, t_data *data);
 
 #endif

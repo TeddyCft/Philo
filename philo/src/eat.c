@@ -13,8 +13,6 @@
 #include "philo.h"
 #include <pthread.h>
 
-// drop_fork() : une fonction qui permet de remettre le owner des deux fork portees par le phi a 0;
-
 ///!\\\ BIEN PROTEGER TOUT CA AVEC UN MUTEX
 void	drop_forks(t_philo *philos, int i, t_data *data)
 {
@@ -26,15 +24,13 @@ void	drop_forks(t_philo *philos, int i, t_data *data)
 	if (!data->forks[i].owner && !data->forks[next].owner)
 	{
 		pthread_mutex_lock(&data->forks[i].mtx);
-		pthread_mutex_lock(&data->forks[next].mtx);
-		data->forks[i].owner == 0;
-		data->forks[next].owner == 0;
+		(&data->forks[next].mtx);
+		data->forks[i].owner = 0;
+		data->forks[next].owner = 0;
 		pthread_mutex_unlock(&data->forks[i].mtx);
-		pthread_mutex_unlock(&data->forks[next].mtx);
+		(&data->forks[next].mtx);
 	}
 }
-
-// can_eat() : verifie si les fourchettes sont disponibles pour le phi, change leur owner auquel cas et print que le owner a prit des forks
 
 ///!\\\ BIEN PROTEGER TOUT CA AVEC UN MUTEX
 int	can_eat(t_philo *philos, int i, t_data *data)
@@ -50,8 +46,8 @@ int	can_eat(t_philo *philos, int i, t_data *data)
 	{
 		pthread_mutex_lock(&data->forks[i].mtx);
 		pthread_mutex_lock(&data->forks[next].mtx);
-		data->forks[i].owner == philos[i].id;
-		data->forks[next].owner == philos[i].id;
+		data->forks[i].owner = philos[i].id;
+		data->forks[next].owner = philos[i].id;
 		pthread_mutex_unlock(&data->forks[i].mtx);
 		pthread_mutex_unlock(&data->forks[next].mtx);
 		return (1);

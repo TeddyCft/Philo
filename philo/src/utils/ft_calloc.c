@@ -6,12 +6,13 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:35:20 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/21 17:04:11 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:39:12 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 static void	ft_bzero(void *s, size_t n)
 {

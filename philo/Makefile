@@ -10,7 +10,10 @@ MAIN = 		./src/main.c\
 
 SOURCES =	$(MAIN)\
 			./src/utils/ft_atoi.c\
+			./src/utils/ft_calloc.c\
+			./src/eat.c\
 			./src/philo.c\
+			./src/routine.c\
 				
 OBJ =		$(SOURCES:.c=.o)\
 
