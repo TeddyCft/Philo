@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:41:30 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/24 16:22:08 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:05:39 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 
 int	stop_threads(t_data *data, t_philo *philos)
 {
@@ -45,9 +44,10 @@ int	philosophers(t_data *data)
 		data->i = i;
 		if (pthread_create(&data->philos[i].thread, NULL, &routine, data))
 			return (i);
-		usleep(100);
 		i++;
 	}
+	data->start = get_time();
+	data->sim = 1;
 	if (stop_threads(data, data->philos))
 		return (-1);
 	return (0);

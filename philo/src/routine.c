@@ -6,14 +6,14 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 19:22:20 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/24 16:13:50 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:07:32 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/time.h>
+#include <sys/time.h> 
 
 void	phi_sleep(t_philo *philos, int i, long time, t_data *data)
 {
@@ -45,22 +45,34 @@ int	eat(t_philo *philos, t_data *data, int i, long time)
 	return (1);
 }
 
-void	*routine(void *arg)
+unsigned long	get_time(void)
 {
 	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+void	*routine(void *arg)
+{
+	unsigned long	time;
 	t_data			*data;
 	int				i;
 
 	data = arg;
 	i = data->i;
 	printf("created philosopher n[%d]\n", i);
-	while (data->philos[i].status != DIE)
+	while (!data->sim)
+		;
+	data->philos[i].last_meal = data->start;
+	while (data->sim)
 	{
-		gettimeofday(&time, NULL);
-		if ((time.tv_usec / 1000) - data->philos[i].last_meal >= data->tt_die)
+		time = get_time();
+		//printf("actual time = %lu, last_meal = %ld, tt_die = %d\n", time, data->philos[i].last_meal, data->tt_die);
+		if (time >= (unsigned long)(data->philos[i].last_meal + data->tt_die))
 			break ;
-		if (!eat(data->philos, data, i, time.tv_usec / 1000))
-			think(data->philos, i, time.tv_usec / 1000);
+		if (!eat(data->philos, data, i, time))
+			think(data->philos, i, time);
 		else
 		{
 			data->philos[i].to_eat--;
@@ -74,11 +86,11 @@ void	*routine(void *arg)
 				}
 				data->philos[i].to_eat--;
 			}
-			phi_sleep(data->philos, i, time.tv_usec / 1000, data);
+			phi_sleep(data->philos, i, time, data);
 		}
 	}
-	gettimeofday(&time, NULL);
-	printf("%ld %d is dead\n", time.tv_usec / 1000, data->philos[i].id);
+	time = get_time();
+	printf("%ld %d is dead\n", time, data->philos[i].id);
 	stop_threads(data, data->philos);
 	return (0);
 }

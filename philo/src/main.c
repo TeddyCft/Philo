@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:55:22 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/24 16:21:59 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:05:15 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,11 @@ t_fork	*fill_forks(t_data *data, int nb)
 	new = ft_calloc(nb + 1, sizeof(t_fork));
 	if (!new)
 		return (NULL);
+	data->forks = new;
 	i = 0;
 	while (i < nb)
 	{
+		// data->forks[i].mtx = ft_calloc(1, sizeof(pthread_mutex_t));
 		pthread_mutex_init(&data->forks[i].mtx, NULL);
 		new[i].id = i + 1;
 		new[i].owner = 0;
@@ -104,6 +106,8 @@ t_data	*fill_data(char **argv, int argc)
 	new = malloc(sizeof(t_data));
 	if (!new)
 		return (mfail());
+	new->sim = 0;
+	new->start = 0;
 	new->nb_philo = ft_atoi(argv[1]);
 	new->tt_die = ft_atoi(argv[2]);
 	new->tt_eat = ft_atoi(argv[3]);

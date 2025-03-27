@@ -23,12 +23,10 @@ void	drop_forks(t_philo *philos, int i, t_data *data)
 		next = 0;
 	if (!data->forks[i].owner && !data->forks[next].owner)
 	{
-		pthread_mutex_lock(&data->forks[i].mtx);
-		(&data->forks[next].mtx);
 		data->forks[i].owner = 0;
 		data->forks[next].owner = 0;
 		pthread_mutex_unlock(&data->forks[i].mtx);
-		(&data->forks[next].mtx);
+		pthread_mutex_unlock(&data->forks[next].mtx);
 	}
 }
 
@@ -48,8 +46,6 @@ int	can_eat(t_philo *philos, int i, t_data *data)
 		pthread_mutex_lock(&data->forks[next].mtx);
 		data->forks[i].owner = philos[i].id;
 		data->forks[next].owner = philos[i].id;
-		pthread_mutex_unlock(&data->forks[i].mtx);
-		pthread_mutex_unlock(&data->forks[next].mtx);
 		return (1);
 	}
 	else
