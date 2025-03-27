@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:55:22 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/27 15:05:15 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/27 21:42:08 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int	arg_check(int argc, char **argv)
 			return (write(2, "Error : argument is invalid\n", 29));
 		if (ft_atoi(argv[1]) < 1)
 			return (write(2, "Error : must be at least 1 philosopher\n", 40));
+		if (argc == 6 && ft_atoi(argv[5]) < 0)
+			return (write(2, "Error : philosopher can't eat negative times\n", 46));
 		i++;
 	}
 	return (0);
@@ -78,21 +80,22 @@ t_fork	*fill_forks(t_data *data, int nb)
 	return (new);
 }
 
-t_philo	*get_philos(t_data data)
+t_philo	*get_philos(t_data *data)
 {
 	t_philo	*philos;
 	int		i;
 
 	i = 0;
-	philos = ft_calloc(data.nb_philo + 1, sizeof(t_philo));
+	philos = ft_calloc(data->nb_philo + 1, sizeof(t_philo));
 	if (!philos)
 		return (NULL);
-	while (i < data.nb_philo)
+	while (i < data->nb_philo)
 	{
+		philos[i].data = data;
 		philos[i].id = i + 1;
 		philos[i].status = START;
-		if (data.goal)
-			philos[i].to_eat = data.goal;
+		if (data->goal)
+			philos[i].to_eat = data->goal;
 		philos[i].last_meal = 0;
 		i++;
 	}
@@ -113,22 +116,24 @@ t_data	*fill_data(char **argv, int argc)
 	new->tt_eat = ft_atoi(argv[3]);
 	new->tt_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
+	{
+		pthread_mutex_init(&new->goal_mtx, NULL);
 		new->goal = ft_atoi(argv[5]);
+	}
 	else
-		new->goal = 0;
+		new->goal = -1;
+	pthread_mutex_init(&new->forks_mtx, NULL);
 	new->i = 0;
 	new->forks = fill_forks(new, new->nb_philo);
 	if (!new->forks)
 		return (free(new), mfail());
-	new->philos = get_philos(*new);
-	if (!new->philos)
-		return (free(new->forks), free(new), mfail());
 	return (new);
 }
 
 int	main(int argc, char **argv)
 {
 	t_data	*data;
+	t_philo	*philos;
 	int		ret;
 
 	if (arg_check(argc, argv))
@@ -136,11 +141,13 @@ int	main(int argc, char **argv)
 	data = fill_data(argv, argc);
 	if (!data)
 		return (1);
-	ret = philosophers(data);
+	philos = get_philos(data);
+	if (!philos)
+		return (free(data->forks), free(data), 1);
+	ret = philosophers(data, philos);
 	if (ret)
 		write(2, "Error : thread failed\n", 23);
 	free(data->forks);
-	free(data->philos);
 	free(data);
 	return (0);
 }

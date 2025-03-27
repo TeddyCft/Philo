@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:41:30 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/27 15:05:39 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/27 21:58:56 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	stop_threads(t_data *data, t_philo *philos)
 {
 	static int	i;
 
+	data->sim = 0;
 	while (i < data->nb_philo)
 	{
 		if (pthread_join(philos[i].thread, NULL))
@@ -29,12 +30,12 @@ int	stop_threads(t_data *data, t_philo *philos)
 		i++;
 	}
 	free(data->forks);
-	free(data->philos);
+	free(philos);
 	free(data);
 	exit(0);
 }
 
-int	philosophers(t_data *data)
+int	philosophers(t_data *data, t_philo *philos)
 {
 	int	i;
 
@@ -42,13 +43,13 @@ int	philosophers(t_data *data)
 	while (i < data->nb_philo)
 	{
 		data->i = i;
-		if (pthread_create(&data->philos[i].thread, NULL, &routine, data))
+		if (pthread_create(&philos[i].thread, NULL, &routine, &philos[i]))
 			return (i);
 		i++;
 	}
-	data->start = get_time();
+	data->start = get_time(data);
 	data->sim = 1;
-	if (stop_threads(data, data->philos))
-		return (-1);
+	while (data->sim)
+		;
 	return (0);
 }
