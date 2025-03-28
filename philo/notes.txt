@@ -33,3 +33,6 @@ COULEURS DANS LE TERMINAL : ANSI ESCAPE CODE
 
 
 BON ! ca marche mieux ! mais faut que je trouve pourquoi ils enchainent pas une fois qu'ils ont fini leur cycle think/eat/sleep et ils attendent juste de mourir x) (pourquoi ils essayent plus de manger apres avoir mange une fois en gros)
+
+
+faire une fonction clear_mutex() pour bien destroy tous les mtx que j'ai set up

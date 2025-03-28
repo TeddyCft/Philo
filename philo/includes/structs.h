@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 14:45:39 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/27 21:41:16 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/28 13:23:13 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_data
 	int				sim;
 	pthread_mutex_t	goal_mtx;
 	pthread_mutex_t	forks_mtx;
+	struct s_philo	*philos;
 	t_fork			*forks;
 }	t_data;
 

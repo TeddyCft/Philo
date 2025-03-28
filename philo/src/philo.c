@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:41:30 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/27 21:58:56 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/28 13:31:22 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,20 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int	stop_threads(t_data *data, t_philo *philos)
+int	stop_threads(t_data *data)
 {
 	static int	i;
 
 	data->sim = 0;
 	while (i < data->nb_philo)
 	{
-		if (pthread_join(philos[i].thread, NULL))
+		if (pthread_join(data->philos[i].thread, NULL))
 			return (i);
 		pthread_mutex_destroy(&data->forks[i].mtx);
 		i++;
 	}
 	free(data->forks);
-	free(philos);
+	free(data->philos);
 	free(data);
 	exit(0);
 }
@@ -40,6 +40,7 @@ int	philosophers(t_data *data, t_philo *philos)
 	int	i;
 
 	i = 0;
+	data->goal = data->nb_philo;
 	while (i < data->nb_philo)
 	{
 		data->i = i;

@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:55:22 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/27 21:42:08 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/28 13:22:12 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,6 @@ t_data	*fill_data(char **argv, int argc)
 int	main(int argc, char **argv)
 {
 	t_data	*data;
-	t_philo	*philos;
 	int		ret;
 
 	if (arg_check(argc, argv))
@@ -141,10 +140,10 @@ int	main(int argc, char **argv)
 	data = fill_data(argv, argc);
 	if (!data)
 		return (1);
-	philos = get_philos(data);
-	if (!philos)
+	data->philos = get_philos(data);
+	if (!data->philos)
 		return (free(data->forks), free(data), 1);
-	ret = philosophers(data, philos);
+	ret = philosophers(data, data->philos);
 	if (ret)
 		write(2, "Error : thread failed\n", 23);
 	free(data->forks);
