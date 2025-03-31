@@ -12,6 +12,7 @@
 
 #include "philo.h"
 #include <pthread.h>
+#include <unistd.h>
 #include <stdio.h>
 
 ///!\\\ BIEN PROTEGER TOUT CA AVEC UN MUTEX
@@ -30,6 +31,18 @@ void	drop_forks(t_philo *philos, t_data *data)
 	pthread_mutex_unlock(&data->forks[next].mtx);
 }
 
+void	priority_offset(t_philo *philo)
+{
+	static int	i;
+
+	if (philo->data->nb_philo % 2 && philo->id == 1)
+	{
+		i++;
+		if (i % 2)
+			usleep(100);
+	}
+}
+
 ///!\\\ BIEN PROTEGER TOUT CA AVEC UN MUTEX
 int	can_eat(t_philo *philos, t_data *data)
 {
@@ -42,6 +55,7 @@ int	can_eat(t_philo *philos, t_data *data)
 		return (0);
 	if (philos->id == data->nb_philo)
 		next = 0;
+	priority_offset(philos);
 	pthread_mutex_lock(&data->forks_mtx);
 	if (!data->forks[i].owner && !data->forks[next].owner)
 	{

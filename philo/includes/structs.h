@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 14:45:39 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/28 13:23:13 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/28 17:43:56 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ typedef enum e_status
 	THINK = 1,
 	EAT = 2,
 	SLEEP = 3,
-	DIE = 4
+	DIE = 4,
+	FORK = 5
 }	t_status;
 
 typedef struct s_fork
@@ -33,8 +34,7 @@ typedef struct s_fork
 
 typedef struct s_data
 {
-	unsigned long	start;
-	int				i;
+	size_t			start;
 	int				nb_philo;
 	int				tt_sleep;
 	int				tt_eat;
@@ -43,6 +43,7 @@ typedef struct s_data
 	int				sim;
 	pthread_mutex_t	goal_mtx;
 	pthread_mutex_t	forks_mtx;
+	pthread_mutex_t	print_mtx;
 	struct s_philo	*philos;
 	t_fork			*forks;
 }	t_data;
@@ -53,7 +54,7 @@ typedef struct s_philo
 	int				id;
 	int				to_eat;
 	enum e_status	status;
-	unsigned long	last_meal;
+	size_t			last_meal;
 	t_data			*data;
 }	t_philo;
 

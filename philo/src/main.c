@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:55:22 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/28 13:22:12 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/03/28 17:44:11 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,8 +122,8 @@ t_data	*fill_data(char **argv, int argc)
 	}
 	else
 		new->goal = -1;
+	pthread_mutex_init(&new->print_mtx, NULL);
 	pthread_mutex_init(&new->forks_mtx, NULL);
-	new->i = 0;
 	new->forks = fill_forks(new, new->nb_philo);
 	if (!new->forks)
 		return (free(new), mfail());
