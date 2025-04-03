@@ -21,7 +21,7 @@ INCLUDES =	./includes
 
 CC = $(QUIET) cc
 
-FLAGS = -Wall -Wextra -Werror -g -pthread
+FLAGS = -Wall -Wextra -Werror -g -pthread 
 
 #----------------------------------------------------------------------#
 

@@ -6,7 +6,7 @@
 /*   By: tcoeffet <tcoeffet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 17:12:44 by tcoeffet          #+#    #+#             */
-/*   Updated: 2025/03/31 18:47:32 by tcoeffet         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:20:45 by tcoeffet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-// NO COLORS
+/* // NO COLORS
 void	print_status(t_status stat, t_philo philos, size_t time, int last)
 {
 	pthread_mutex_lock(&philos.data->print_mtx);
@@ -40,10 +40,10 @@ void	print_status(t_status stat, t_philo philos, size_t time, int last)
 	if (stat == DIE)
 		printf("%ld %d is dead\n", time, philos.id);
 	pthread_mutex_unlock(&philos.data->print_mtx);
-}
+} */
 
 // COLORS
-/* void	print_status(t_status stat, t_philo philos, size_t time, int last)
+void	print_status(t_status stat, t_philo philos, size_t time, int last)
 {
 	pthread_mutex_lock(&philos.data->print_mtx);
 	if (!philos.data->sim)
@@ -67,41 +67,51 @@ void	print_status(t_status stat, t_philo philos, size_t time, int last)
 	if (stat == DIE)
 		printf("\033[0;31m%ld %d is dead\033[0m\n", time, philos.id);
 	pthread_mutex_unlock(&philos.data->print_mtx);
-} */
+}
 
 void	change_status(t_philo *philo, int status)
 {
-	printf("trying to change status in philo[%d] for stat [%d]\n", philo->id, status);
+	//printf("trying to change status in philo[%d] for stat [%d]\n", philo->id, status);
 	pthread_mutex_lock(&philo->stat_mtx);
 	philo->status = status;
 	pthread_mutex_unlock(&philo->stat_mtx);
 }
 
+void	has_eaten(t_data *data, t_philo *philo)
+{
+	philo->to_eat--;
+	if (!philo->to_eat)
+	{
+		philo->to_eat--;
+		pthread_mutex_lock(&data->goal_mtx);
+		data->goal--;
+		if (data->goal == 0)
+		{
+			pthread_mutex_unlock(&data->goal_mtx);
+			print_status (philo->prev_stat, *philo, get_time(data), 1);
+			pthread_mutex_unlock(&data->goal_mtx);
+			return ;
+		}
+		pthread_mutex_unlock(&data->goal_mtx);
+		print_status (philo->prev_stat, *philo, get_time(data), 0);
+	}
+}
+
 void	check_status(t_data *data, t_philo *philo, int i)
 {
-	pthread_mutex_lock(&philo[i].stat_mtx);
-	if (philo[i].prev_stat != philo[i].status)
+	(void) data;
+	(void) i;
+	pthread_mutex_lock(&philo->stat_mtx);
+	if (philo->prev_stat != philo->status)
 	{
-		philo[i].prev_stat = philo[i].status;
-		pthread_mutex_unlock(&philo[i].stat_mtx);
-		if (philo[i].prev_stat == EAT)
-			philo[i].to_eat--;
-		if (!philo[i].to_eat)
-		{
-			philo[i].to_eat--;
-			pthread_mutex_lock(&data->goal_mtx);
-			data->goal--;
-			if (data->goal == 0)
-			{
-				pthread_mutex_unlock(&data->goal_mtx);
-				print_status (philo[i].prev_stat, *philo, get_time(data), 1);
-			}
-			pthread_mutex_unlock(&data->goal_mtx);
-		}
-		else if (philo[i].prev_stat == DIE)
-			print_status(philo[i].prev_stat, *philo, get_time(data), 1);
+		philo->prev_stat = philo->status;
+		pthread_mutex_unlock(&philo->stat_mtx);
+		if (philo->prev_stat == EAT)
+			has_eaten(data, philo);
+		else if (philo->prev_stat == DIE)
+			print_status(philo->prev_stat, *philo, get_time(data), 1);
 		else
-			print_status(philo[i].prev_stat, *philo, get_time(data), 0);
+			print_status(philo->prev_stat, *philo, get_time(data), 0);
 	}
 }
 
@@ -110,13 +120,14 @@ int	monitor(t_data *data)
 	int	i;
 
 	i = 0;
+	printf("test\n");
 	while (i < data->nb_philo && data->sim)
 	{
-		printf("monitoring [%d] -- status = %d\n", i, data->philos[i].status);
 		if (!data->sim)
 			return (stop_threads(data));
 		check_status(data, &data->philos[i], i);
 		i++;
 	}
+	printf("test2\n");
 	return (1);
 }
